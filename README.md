@@ -9,7 +9,7 @@ Elle passe par le cloud Dreamehome (HTTP pour lire/écrire, MQTT pour les change
 ### Via HACS (recommandé)
 
 1. HACS → *⋮ (en haut à droite) → Dépôts personnalisés*.
-2. URL : `https://github.com/fabien-solvez/dreame_laundry`, catégorie : **Intégration**.
+2. URL : `https://git.dpnac.cloud/fabien.solvez/dreame`, catégorie : **Intégration**.
 3. Le dépôt apparaît → **Télécharger**.
 4. Redémarre Home Assistant.
 5. *Paramètres → Appareils et services → Ajouter une intégration → Dreame Laundry*.

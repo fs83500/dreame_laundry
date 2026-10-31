@@ -12,12 +12,12 @@ Code reçu dans `/workspace/uploads/dreame_laundry.zip` (analyse faite, voir con
 - [x] Nettoyage : `.ruff_cache/` du zip supprimé, `.gitignore` créé (__pycache__, *.pyc, .ruff_cache, .pytest_cache)
 - [x] Qualité : ruff check + format OK (hors `cloud/` vendored Tasshack, MIT — 58 warnings internes non activés), compilation Python OK, JSON valides, clés de traductions synchronisées
 
-## Reste à faire (par Fabien — git en lecture seule pour l'agent)
-- [ ] Valider depuis l'interface, puis pousser vers GitHub `fabiend94150/dreame_laundry`
-- [ ] Ajouter le dépôt dans HACS : Dépôts personnalisés → catégorie Intégration
+## Reste à faire
+- [x] Commit + push effectués (24fb029 sur main, remote git.dpnac.cloud/fabien.solvez/dreame)
 - [ ] Recette sur l'installation réelle : config flow (login Dreamehome), scan des propriétés, mapping JSON, keep-awake
+- [ ] Optionnel : si le dépôt doit être public pour HACS, vérifier sa visibilité sur la forge (URL directe doit être accessible depuis HA)
 
 ## Décisions
-- Pseudo GitHub `fabien-solvez` (repo `fabien-solvez/dreame_laundry`), codeowner `@fabien-solvez`
+- Remote réel : forge Forgejo git.dpnac.cloud, dépôt `fabien.solvez/dreame` (pas GitHub) — manifest/README pointent dessus
 - Le code vendored `cloud/protocol.py` (Tasshack, MIT) n'est ni reformatté ni linté — on n'y touche pas pour faciliter les mises à jour amont
 - Tests conservés à la racine (`tests/`) : ils importent `custom_components.dreame_laundry` depuis la racine, pytest.ini testpaths=tests

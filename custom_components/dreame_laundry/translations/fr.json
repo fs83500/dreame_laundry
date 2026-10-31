@@ -1,0 +1,147 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Compte Dreamehome",
+        "description": "Identifiants de l'appli Dreamehome (pas Xiaomi Home).",
+        "data": {
+          "username": "E-mail",
+          "password": "Mot de passe",
+          "country": "Région du compte"
+        }
+      },
+      "devices": {
+        "title": "Appareils",
+        "description": "Coche le lave-linge et le sèche-linge à intégrer.",
+        "data": {
+          "devices": "Appareils"
+        }
+      },
+      "reauth_confirm": {
+        "title": "Reconnexion Dreamehome",
+        "description": "Nouveau mot de passe pour {username}.",
+        "data": {
+          "password": "Mot de passe"
+        }
+      }
+    },
+    "error": {
+      "invalid_auth": "Identifiants refusés par Dreamehome (ou vérification demandée : connecte-toi une fois dans l'appli puis réessaie).",
+      "cannot_connect": "Cloud Dreamehome injoignable, vérifie la région.",
+      "no_selection": "Sélectionne au moins un appareil.",
+      "unknown": "Erreur inattendue, voir les journaux."
+    },
+    "abort": {
+      "already_configured": "Ce compte est déjà configuré.",
+      "no_devices": "Aucun lave-linge / sèche-linge sur ce compte.",
+      "reauth_successful": "Reconnexion réussie."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Dreame Laundry",
+        "description": "Correspondance des propriétés (JSON, facultatif) : voir le README. Lance d'abord « Scanner les propriétés » sur chaque appareil. {error}",
+        "data": {
+          "scan_interval": "Intervalle d'interrogation",
+          "keep_awake_interval": "Intervalle de maintien en éveil",
+          "mapping": "Correspondance des propriétés (JSON)"
+        }
+      }
+    },
+    "error": {
+      "invalid_mapping": "JSON de correspondance invalide."
+    }
+  },
+  "selector": {
+    "country": {
+      "options": {
+        "eu": "Europe",
+        "cn": "Chine",
+        "us": "États-Unis",
+        "ru": "Russie",
+        "sg": "Singapour / Asie",
+        "kr": "Corée"
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "status": {
+        "name": "État"
+      },
+      "fault": {
+        "name": "Défaut"
+      },
+      "program": {
+        "name": "Programme"
+      },
+      "remaining_time": {
+        "name": "Temps restant"
+      },
+      "progress": {
+        "name": "Progression"
+      },
+      "power_w": {
+        "name": "Puissance"
+      },
+      "energy_total": {
+        "name": "Énergie totale"
+      },
+      "energy_cycle": {
+        "name": "Énergie du cycle"
+      },
+      "energy_integrated": {
+        "name": "Énergie (calculée)"
+      },
+      "water": {
+        "name": "Eau consommée"
+      },
+      "temperature": {
+        "name": "Température"
+      },
+      "spin_speed": {
+        "name": "Essorage"
+      },
+      "drying_level": {
+        "name": "Niveau de séchage"
+      },
+      "end_time": {
+        "name": "Fin prévue"
+      },
+      "raw": {
+        "name": "Propriété {code}"
+      }
+    },
+    "binary_sensor": {
+      "running": {
+        "name": "Cycle en cours"
+      },
+      "online": {
+        "name": "Joignable"
+      },
+      "door": {
+        "name": "Porte"
+      },
+      "child_lock": {
+        "name": "Sécurité enfant"
+      }
+    },
+    "switch": {
+      "keep_awake": {
+        "name": "Maintenir éveillé"
+      },
+      "power": {
+        "name": "Alimentation"
+      }
+    },
+    "button": {
+      "scan": {
+        "name": "Scanner les propriétés"
+      },
+      "refresh": {
+        "name": "Actualiser"
+      }
+    }
+  }
+}

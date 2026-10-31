@@ -1,0 +1,13 @@
+{
+  "domain": "dreame_laundry",
+  "name": "Dreame Laundry",
+  "codeowners": ["@fabien-solvez"],
+  "config_flow": true,
+  "dependencies": [],
+  "documentation": "https://github.com/fabien-solvez/dreame_laundry",
+  "integration_type": "hub",
+  "iot_class": "cloud_push",
+  "loggers": ["custom_components.dreame_laundry"],
+  "requirements": ["paho-mqtt>=1.6.1", "pycryptodome>=3.20", "cryptography>=42.0.0"],
+  "version": "0.1.1"
+}

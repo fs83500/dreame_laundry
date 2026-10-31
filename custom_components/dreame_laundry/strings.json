@@ -1,0 +1,147 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Dreamehome account",
+        "description": "Credentials of the Dreamehome app (not Xiaomi Home).",
+        "data": {
+          "username": "E-mail",
+          "password": "Password",
+          "country": "Account region"
+        }
+      },
+      "devices": {
+        "title": "Appliances",
+        "description": "Select the washer and dryer to add.",
+        "data": {
+          "devices": "Appliances"
+        }
+      },
+      "reauth_confirm": {
+        "title": "Dreamehome re-authentication",
+        "description": "New password for {username}.",
+        "data": {
+          "password": "Password"
+        }
+      }
+    },
+    "error": {
+      "invalid_auth": "Dreamehome refused the login (or asks for a verification: log in once in the app, then retry).",
+      "cannot_connect": "Dreamehome cloud unreachable, check the region.",
+      "no_selection": "Select at least one appliance.",
+      "unknown": "Unexpected error, see the logs."
+    },
+    "abort": {
+      "already_configured": "This account is already configured.",
+      "no_devices": "No washer / dryer on this account.",
+      "reauth_successful": "Re-authentication successful."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Dreame Laundry",
+        "description": "Property mapping (JSON, optional): see the README. Run \"Scan properties\" on each appliance first. {error}",
+        "data": {
+          "scan_interval": "Polling interval",
+          "keep_awake_interval": "Keep-awake interval",
+          "mapping": "Property mapping (JSON)"
+        }
+      }
+    },
+    "error": {
+      "invalid_mapping": "Invalid mapping JSON."
+    }
+  },
+  "selector": {
+    "country": {
+      "options": {
+        "eu": "Europe",
+        "cn": "China",
+        "us": "United States",
+        "ru": "Russia",
+        "sg": "Singapore / Asia",
+        "kr": "Korea"
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "status": {
+        "name": "Status"
+      },
+      "fault": {
+        "name": "Fault"
+      },
+      "program": {
+        "name": "Program"
+      },
+      "remaining_time": {
+        "name": "Remaining time"
+      },
+      "progress": {
+        "name": "Progress"
+      },
+      "power_w": {
+        "name": "Power"
+      },
+      "energy_total": {
+        "name": "Total energy"
+      },
+      "energy_cycle": {
+        "name": "Cycle energy"
+      },
+      "energy_integrated": {
+        "name": "Energy (integrated)"
+      },
+      "water": {
+        "name": "Water used"
+      },
+      "temperature": {
+        "name": "Temperature"
+      },
+      "spin_speed": {
+        "name": "Spin speed"
+      },
+      "drying_level": {
+        "name": "Drying level"
+      },
+      "end_time": {
+        "name": "Expected end"
+      },
+      "raw": {
+        "name": "Property {code}"
+      }
+    },
+    "binary_sensor": {
+      "running": {
+        "name": "Cycle running"
+      },
+      "online": {
+        "name": "Reachable"
+      },
+      "door": {
+        "name": "Door"
+      },
+      "child_lock": {
+        "name": "Child lock"
+      }
+    },
+    "switch": {
+      "keep_awake": {
+        "name": "Keep awake"
+      },
+      "power": {
+        "name": "Power"
+      }
+    },
+    "button": {
+      "scan": {
+        "name": "Scan properties"
+      },
+      "refresh": {
+        "name": "Refresh"
+      }
+    }
+  }
+}

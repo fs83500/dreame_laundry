@@ -22,7 +22,7 @@ Elle passe par le cloud Dreamehome (HTTP pour lire/écrire, MQTT pour les change
 
 ## Première étape obligatoire : le scan des propriétés
 
-Dreame ne publie pas la liste des propriétés (siid/piid) de ses lave-linge et sèche-linge. Au départ, seules quatre correspondances **supposées** existent (état `2.2`, défaut `2.3`, programme `2.4`, temps restant `2.5`) ; elles portent l'attribut `mapping: guess`.
+Dreame ne publie pas la liste des propriétés (siid/piid) de ses lave-linge et sèche-linge. Au départ, quelques correspondances **supposées** existent (état `2.2`, défaut `2.3`, programme `2.4`) ; elles portent l'attribut `mapping: guess`. Le temps restant `2.11` est **confirmé** sur lave-linge (vérifié le 31/10/2026) ; sur sèche-linge il reste supposé (`2.5`).
 
 1. Appareil allumé, appuie sur **Scanner les propriétés** (entité de diagnostic). Une notification liste toutes les propriétés qui répondent, et chacune devient un capteur `Propriété x.y`.
 2. Lance un cycle et regarde quels capteurs `Propriété x.y` bougent : temps restant qui décroît, état qui change, compteur d'énergie qui monte.
@@ -34,7 +34,7 @@ Exemple :
 {
   "washer": {
     "status": {"prop": "2.2", "map": {"1": "Veille", "2": "Lavage", "3": "Rinçage", "4": "Essorage", "5": "Terminé"}, "running_states": [2, 3, 4]},
-    "remaining_time": "2.5",
+    "remaining_time": "2.11",
     "energy_cycle": {"prop": "2.12", "scale": 0.01},
     "power": {"prop": "2.1", "on": true},
     "auto_power_off": {"prop": "2.20", "keep_value": 0}

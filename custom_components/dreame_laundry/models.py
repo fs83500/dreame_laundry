@@ -1,16 +1,18 @@
 """Property mapping (MIoT siid/piid -> semantic key) for Dreame laundry appliances.
 
-Dreame does not publish the MIoT spec of its washers/dryers. The defaults below are
+Dreame does not publish the MIoT spec of its washers/dryers. Most defaults below are
 read-only guesses following the usual MIoT "washer" service layout and MUST be checked
-with the "Scan properties" button. Writable keys (power, auto_power_off) are never
-guessed: they only exist once you declare them in the integration options.
+with the "Scan properties" button (status, fault, program, and remaining_time on dryers).
+"remaining_time": "2.11" is CONFIRMED on washer hardware (2026-10-31).
+Writable keys (power, auto_power_off) are never guessed: they only exist once you
+declare them in the integration options.
 
 Override format (integration options, JSON), by appliance kind or by device id:
 
 {
   "washer": {
     "status": {"prop": "2.2", "map": {"1": "Veille", "2": "Lavage"}, "running_states": [2, 3]},
-    "remaining_time": "2.5",
+    "remaining_time": "2.11",
     "power": {"prop": "2.1", "on": true},
     "auto_power_off": {"prop": "2.20", "keep_value": 0},
     "energy_cycle": {"prop": "2.12", "scale": 0.01}
@@ -49,15 +51,23 @@ BINARY_KEYS = ("door", "child_lock")
 WRITABLE_KEYS = ("power", "auto_power_off")
 ALL_KEYS = SENSOR_KEYS + BINARY_KEYS + WRITABLE_KEYS
 
-_GUESS = {
+_GUESS_WASHER = {
     "status": "2.2",
     "fault": "2.3",
     "program": "2.4",
+    # Confirmed 2026-10-31 on a real washer: 2.11 = remaining minutes.
+    "remaining_time": "2.11",
+}
+_GUESS_DRYER = {
+    "status": "2.2",
+    "fault": "2.3",
+    "program": "2.4",
+    # Unverified on dryer hardware: 2.11 is confirmed on washers only.
     "remaining_time": "2.5",
 }
 DEFAULT_MAPPINGS: dict[str, dict[str, Any]] = {
-    KIND_WASHER: dict(_GUESS),
-    KIND_DRYER: dict(_GUESS),
+    KIND_WASHER: dict(_GUESS_WASHER),
+    KIND_DRYER: dict(_GUESS_DRYER),
     KIND_OTHER: {},
 }
 

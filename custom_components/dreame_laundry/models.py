@@ -113,11 +113,12 @@ class PropSpec:
         if self.value_map:
             return self.value_map.get(str(value), str(value))
         if (
-            self.scale is not None
+            (self.scale is not None or self.offset)
             and isinstance(value, (int, float))
             and not isinstance(value, bool)
         ):
-            return round(value * self.scale + self.offset, 3)
+            scale = 1 if self.scale is None else self.scale
+            return round(value * scale + self.offset, 3)
         return value
 
 
@@ -151,12 +152,13 @@ def _spec_from(key: str, raw: Any) -> PropSpec:
     scale = raw.get("scale")
     if scale is not None and not isinstance(scale, (int, float)):
         raise MappingError(f"'{key}.scale' must be a number")
+    offset = raw.get("offset", 0)
+    if isinstance(offset, bool) or not isinstance(offset, (int, float)):
+        raise MappingError(f"'{key}.offset' must be a number")
     extra = {
         k: v for k, v in raw.items() if k not in ("prop", "map", "scale", "offset")
     }
-    return PropSpec(
-        key, siid, piid, scale, float(raw.get("offset", 0)), value_map, extra
-    )
+    return PropSpec(key, siid, piid, scale, float(offset), value_map, extra)
 
 
 def validate_overrides(overrides: Any) -> dict[str, Any]:

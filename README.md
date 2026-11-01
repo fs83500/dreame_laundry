@@ -94,7 +94,7 @@ Si ces avertissements répétés polluent ton journal, réduis la verbosité de 
 ```yaml
 logger:
   logs:
-    custom_components.dreame_laundry.cloud.protocol: debug
+    custom_components.dreame_laundry.cloud.protocol: error
 ```
 
 ### L'appareil ne se réveille jamais

@@ -63,6 +63,11 @@ class FakeDevice:
         self.writes: list[tuple] = []
         self.mqtt_connected = True
         self.logged_in = True
+        if did == "222":  # dryer: 2.1 = state (3 = running)
+            self.props["2.1"] = 3
+        if did == "111":  # washer at rest: phase 8, 2.11 = programme duration
+            self.props["2.4"] = 8
+            self.props["2.11"] = 97
         FakeDevice.instances[did] = self
 
     def ensure_connected(self, on_message, on_connected=None):
@@ -166,21 +171,30 @@ async def test_entities_push_scan(hass: HomeAssistant, fake_cloud) -> None:
     await hass.async_block_till_done()
 
     states = {s.entity_id: s for s in hass.states.async_all()}
-    assert states["sensor.lave_linge_etat"].state == "1"
+    assert states["sensor.lave_linge_etat"].state == "Arrêt"
     assert states["sensor.lave_linge_etat"].attributes["mapping"].startswith("guess")
-    assert states["sensor.lave_linge_temps_restant"].state == "0"
+    # at rest 2.11 shows the programme duration: not a running cycle
+    assert states["sensor.lave_linge_temps_restant"].state == "97"
     assert states["binary_sensor.lave_linge_cycle_en_cours"].state == "off"
+    assert states["sensor.lave_linge_fin_prevue"].state == "unknown"
+    assert "sensor.lave_linge_programme" not in states
+    assert "sensor.lave_linge_defaut" not in states
     assert states["switch.lave_linge_maintenir_eveille"].state == "on"
     assert (
         "switch.lave_linge_alimentation" not in states
     )  # power not mapped -> no write
     assert states["binary_sensor.seche_linge_joignable"].state == "on"
+    # dryer: 2.1 = 3 is "running" even though remaining time 2.11 is 0
+    assert states["sensor.seche_linge_etat"].state == "En cours"
+    assert states["binary_sensor.seche_linge_cycle_en_cours"].state == "on"
+    assert "sensor.seche_linge_defaut" not in states
 
     # MQTT push: cycle starts (washer remaining time is 2.11)
     fake_cloud["111"].on_message(
         {
             "method": "properties_changed",
             "params": [
+                {"siid": 2, "piid": 4, "value": 1},
                 {"siid": 2, "piid": 11, "value": 87},
                 {"siid": 6, "piid": 3, "value": 40},
             ],
@@ -188,6 +202,7 @@ async def test_entities_push_scan(hass: HomeAssistant, fake_cloud) -> None:
     )
     await hass.async_block_till_done()
     assert hass.states.get("sensor.lave_linge_temps_restant").state == "87"
+    assert hass.states.get("sensor.lave_linge_etat").state == "Lavage"
     assert hass.states.get("binary_sensor.lave_linge_cycle_en_cours").state == "on"
     assert hass.states.get("sensor.lave_linge_fin_prevue").state not in (
         "unknown",
@@ -318,7 +333,7 @@ async def test_diagnostics(hass: HomeAssistant, fake_cloud) -> None:
     await hass.async_block_till_done()
     diag = await async_get_config_entry_diagnostics(hass, entry)
     assert diag["entry"][CONF_PASSWORD] == "**REDACTED**"
-    assert diag["devices"][0]["mapping"]["status"] == "2.2"
+    assert diag["devices"][0]["mapping"]["status"] == "2.4"
 
 
 async def test_end_time_known_at_startup(hass: HomeAssistant, fake_cloud) -> None:
@@ -329,6 +344,7 @@ async def test_end_time_known_at_startup(hass: HomeAssistant, fake_cloud) -> Non
     with patch.object(FakeDevice, "get_props", autospec=True) as get_props:
 
         def _props(self, codes, timeout=None):
+            self.props["2.4"] = 1  # washing
             self.props["2.11"] = 42
             return {
                 f"{s}.{p}": self.props[f"{s}.{p}"]
@@ -392,7 +408,7 @@ async def test_appliance_off_at_startup_does_not_block_setup(
     await entry.runtime_data["111"].async_refresh()
     await hass.async_block_till_done()
     assert hass.states.get("binary_sensor.lave_linge_joignable").state == "on"
-    assert hass.states.get("sensor.lave_linge_etat").state == "1"
+    assert hass.states.get("sensor.lave_linge_etat").state == "Arrêt"
 
 
 async def test_cloud_unreachable_retries_setup(hass: HomeAssistant, fake_cloud) -> None:

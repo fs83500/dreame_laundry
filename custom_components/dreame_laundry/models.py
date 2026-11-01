@@ -2,8 +2,9 @@
 
 Dreame does not publish the MIoT spec of its washers/dryers. Most defaults below are
 read-only guesses following the usual MIoT "washer" service layout and MUST be checked
-with the "Scan properties" button (status, fault, program, and remaining_time on dryers).
-"remaining_time": "2.11" is CONFIRMED on washer hardware (2026-10-31).
+with the "Scan properties" button.
+Washer and dryer defaults come from property surveys on dreame.washer.l9nacn and
+dreame.dryer.l9nacn (2026-10-31 / 2026-11-01).
 Writable keys (power, auto_power_off) are never guessed: they only exist once you
 declare them in the integration options.
 
@@ -51,19 +52,35 @@ BINARY_KEYS = ("door", "child_lock")
 WRITABLE_KEYS = ("power", "auto_power_off")
 ALL_KEYS = SENSOR_KEYS + BINARY_KEYS + WRITABLE_KEYS
 
+# From property surveys on dreame.washer.l9nacn (2026-11-01): 2.4 = cycle phase
+# (2/3/6/8 confirmed, 1 probable), 2.11 = remaining minutes (confirmed). At rest
+# 2.11 shows the selected programme's duration, so "running" must come from the
+# phase, not from remaining time > 0. Program and fault not identified yet.
 _GUESS_WASHER = {
-    "status": "2.2",
-    "fault": "2.3",
-    "program": "2.4",
-    # Confirmed 2026-10-31 on a real washer: 2.11 = remaining minutes.
+    "status": {
+        "prop": "2.4",
+        "map": {
+            "1": "Lavage",
+            "2": "Rinçage",
+            "3": "Essorage",
+            "6": "Terminé",
+            "8": "Arrêt",
+        },
+        "running_states": [1, 2, 3],
+    },
     "remaining_time": "2.11",
 }
+# From a property survey on dreame.dryer.l9nacn (2026-11-01): 2.3 = program
+# (confirmed), 2.1 = state (1 = stopped, 3 = running, probable), 2.11 = remaining
+# minutes (probable). No fault property identified yet.
 _GUESS_DRYER = {
-    "status": "2.2",
-    "fault": "2.3",
-    "program": "2.4",
-    # Unverified on dryer hardware: 2.11 is confirmed on washers only.
-    "remaining_time": "2.5",
+    "status": {
+        "prop": "2.1",
+        "map": {"1": "Arrêt", "3": "En cours"},
+        "running_states": [3],
+    },
+    "program": "2.3",
+    "remaining_time": "2.11",
 }
 DEFAULT_MAPPINGS: dict[str, dict[str, Any]] = {
     KIND_WASHER: dict(_GUESS_WASHER),

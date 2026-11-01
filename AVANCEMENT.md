@@ -13,6 +13,7 @@ Dépôt : https://git.dpnac.cloud/fabien.solvez/dreame (forge Forgejo de Fabien)
 - [x] HACS ne supporte que GitHub → installation manuelle validée sur l'installation réelle (HA 2026.7.2)
 - [x] v0.1.2 : `remaining_time` lave-linge = `2.11` CONFIRMÉ (avant le guess 2.5, faux sur machine réelle) — dryer garde 2.5 (non vérifié)
 - [x] Archive d'installation `dreame_laundry-0.1.2.zip` (24 fichiers, custom_components uniquement) + sha256 4f8eacdf…
+- [x] **Publication GitHub (01/11/2026 01:55)** : miroir public [fs83500/dreame_laundry](https://github.com/fs83500/dreame_laundry) publié depuis la forge (fusion `-s ours` du stub initial GitHub, push fast-forward 1cc5be8) ; README installation HACS → URL GitHub, manifest documentation → GitHub, codeowners `@fs83500`
 
 ## Reste à faire
 - [ ] Recette continue sur machine réelle : confirmer les autres mappings (état 2.2, défaut 2.3, programme 2.4, énergie, eau, progression…)

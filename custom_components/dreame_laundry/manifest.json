@@ -1,10 +1,10 @@
 {
   "domain": "dreame_laundry",
   "name": "Dreame Laundry",
-  "codeowners": ["@fabien.solvez"],
+  "codeowners": ["@fs83500"],
   "config_flow": true,
   "dependencies": [],
-  "documentation": "https://git.dpnac.cloud/fabien.solvez/dreame",
+  "documentation": "https://github.com/fs83500/dreame_laundry",
   "integration_type": "hub",
   "iot_class": "cloud_push",
   "loggers": ["custom_components.dreame_laundry"],

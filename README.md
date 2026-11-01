@@ -4,12 +4,14 @@ Intégration personnalisée pour les lave-linge et sèche-linge Dreame appairés
 
 Elle passe par le cloud Dreamehome (HTTP pour lire/écrire, MQTT pour les changements en temps réel). Le client cloud est repris de [Tasshack/dreame-vacuum](https://github.com/Tasshack/dreame-vacuum) (licence MIT, voir `cloud/LICENSE.tasshack`).
 
+> **Dépôts** : développement sur la forge [git.dpnac.cloud/fabien.solvez/dreame](https://git.dpnac.cloud/fabien.solvez/dreame) — miroir public [GitHub fs83500/dreame_laundry](https://github.com/fs83500/dreame_laundry) (requis pour HACS, qui n'accepte que GitHub).
+
 ## Installation
 
 ### Via HACS (recommandé)
 
 1. HACS → *⋮ (en haut à droite) → Dépôts personnalisés*.
-2. URL : `https://git.dpnac.cloud/fabien.solvez/dreame`, catégorie : **Intégration**.
+2. URL : `https://github.com/fs83500/dreame_laundry`, catégorie : **Intégration**.
 3. Le dépôt apparaît → **Télécharger**.
 4. Redémarre Home Assistant.
 5. *Paramètres → Appareils et services → Ajouter une intégration → Dreame Laundry*.

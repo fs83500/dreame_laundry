@@ -65,7 +65,7 @@ def test_get_props_batches_and_filters():
         dev.get_props([(2, 1)], timeout=15)
         assert dev._proto.calls == [("get_properties", 1, 15)]
         assert dev.set_prop(2, 1, True) is True
-        dev._proto.send = lambda *a: None
+        dev._proto.send = lambda *a, **kw: None
         with pytest.raises(CannotConnect):
             dev.get_props([(2, 1)])
 

@@ -47,14 +47,14 @@ Dépôt : https://git.dpnac.cloud/fabien.solvez/dreame (forge Forgejo de Fabien)
 - `2.11` = temps restant (minutes) — confirmé par observation (décroît pendant le cycle)
 - `1.4` = version du firmware — relevée par Fabien le 01/11/2026 (capteur « Propriété 1.4 »). Conforme au service MIoT standard « device information » (siid 1), où `1.1` = fabricant, `1.2` = modèle, `1.3` = n° de série, `1.4` = firmware.
 
-### Scan complet lave-linge `dreame.washer.l9nacn` (« Moumouss »), 01/11/2026, pendant un cycle (2.11 = 47 min restantes)
+### Scan complet lave-linge `dreame.washer.l9nacn` (« Moumouss »), 01/11/2026, pendant la **phase LAVAGE** (2.11 = 47 min restantes) — scan pendant le rinçage à venir
 29 propriétés répondent :
 
 | siid.piid | valeur | hypothèse (à confirmer par un 2ᵉ scan à l'arrêt) |
 |---|---|---|
 | 1.4 | `"0.1.1_3017"` | **firmware (confirmé)** |
 | 1.5 | `"12345678"` | valeur factice (n° de série non renseigné ?) |
-| 2.1 | 3 | **candidat « état »** (≠ 0 pendant le cycle) |
+| 2.1 | 3 | **candidat « état / phase »** (≠ 0 pendant le cycle ; 3 = lavage ?) |
 | 2.2 | 0 | ⚠️ mapping par défaut « état » — vaut 0 en plein cycle : probablement faux |
 | 2.3 | 0 | défaut (0 = aucun) plausible |
 | 2.4 | 1 | programme ? |

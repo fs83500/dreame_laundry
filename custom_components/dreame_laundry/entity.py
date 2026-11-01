@@ -7,8 +7,9 @@ from typing import Any
 from homeassistant.helpers.device_registry import CONNECTION_NETWORK_MAC, DeviceInfo
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-from .const import DOMAIN, MANUFACTURER
+from .const import DOMAIN, KIND_DRYER, KIND_WASHER, MANUFACTURER
 from .coordinator import LaundryCoordinator
+from .models import short_model
 
 
 class LaundryEntity(CoordinatorEntity[LaundryCoordinator]):
@@ -24,13 +25,21 @@ class LaundryEntity(CoordinatorEntity[LaundryCoordinator]):
         connections = (
             {(CONNECTION_NETWORK_MAC, dev["mac"].lower())} if dev.get("mac") else set()
         )
-        self._attr_device_info = DeviceInfo(
+        model = short_model(dev["model"])
+        info = DeviceInfo(
             identifiers={(DOMAIN, dev["did"])},
             connections=connections,
             manufacturer=MANUFACTURER,
-            model=dev["model"],
-            name=dev["name"],
+            model=model,
+            model_id=dev["model"],
         )
+        if dev.get("kind") in (KIND_WASHER, KIND_DRYER):
+            # "Lave-linge L9" / "Sèche-linge L9": entities read "Lave-linge L9 État"…
+            info["translation_key"] = dev["kind"]
+            info["translation_placeholders"] = {"model": model}
+        else:
+            info["name"] = dev["name"]
+        self._attr_device_info = info
 
     @property
     def extra_state_attributes(self) -> dict[str, Any] | None:

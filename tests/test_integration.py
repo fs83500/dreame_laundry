@@ -171,23 +171,29 @@ async def test_entities_push_scan(hass: HomeAssistant, fake_cloud) -> None:
     await hass.async_block_till_done()
 
     states = {s.entity_id: s for s in hass.states.async_all()}
-    assert states["sensor.lave_linge_etat"].state == "Arrêt"
-    assert states["sensor.lave_linge_etat"].attributes["mapping"].startswith("guess")
+    assert states["sensor.lave_linge_l9_etat"].state == "Arrêt"
+    assert states["sensor.lave_linge_l9_etat"].attributes["mapping"].startswith("guess")
     # at rest 2.11 shows the programme duration: not a running cycle
-    assert states["sensor.lave_linge_temps_restant"].state == "97"
-    assert states["binary_sensor.lave_linge_cycle_en_cours"].state == "off"
-    assert states["sensor.lave_linge_fin_prevue"].state == "unknown"
-    assert "sensor.lave_linge_programme" not in states
-    assert "sensor.lave_linge_defaut" not in states
-    assert states["switch.lave_linge_maintenir_eveille"].state == "on"
+    assert states["sensor.lave_linge_l9_temps_restant"].state == "97"
+    assert states["binary_sensor.lave_linge_l9_cycle_en_cours"].state == "off"
+    assert states["sensor.lave_linge_l9_fin_prevue"].state == "unknown"
+    assert "sensor.lave_linge_l9_programme" not in states
+    assert "sensor.lave_linge_l9_defaut" not in states
+    assert states["switch.lave_linge_l9_maintenir_eveille"].state == "on"
     assert (
-        "switch.lave_linge_alimentation" not in states
+        "switch.lave_linge_l9_alimentation" not in states
     )  # power not mapped -> no write
-    assert states["binary_sensor.seche_linge_joignable"].state == "on"
+    assert states["binary_sensor.seche_linge_l9_joignable"].state == "on"
+    from homeassistant.helpers import device_registry as dr
+
+    washer_dev = dr.async_get(hass).async_get_device(identifiers={(DOMAIN, "111")})
+    assert washer_dev.name == "Lave-linge L9"
+    assert (washer_dev.model, washer_dev.model_id) == ("L9", "dreame.washer.l9xx")
+    assert states["sensor.lave_linge_l9_etat"].name == "Lave-linge L9 État"
     # dryer: 2.1 = 3 is "running" even though remaining time 2.11 is 0
-    assert states["sensor.seche_linge_etat"].state == "En cours"
-    assert states["binary_sensor.seche_linge_cycle_en_cours"].state == "on"
-    assert "sensor.seche_linge_defaut" not in states
+    assert states["sensor.seche_linge_l9_etat"].state == "En cours"
+    assert states["binary_sensor.seche_linge_l9_cycle_en_cours"].state == "on"
+    assert "sensor.seche_linge_l9_defaut" not in states
 
     # MQTT push: cycle starts (washer remaining time is 2.11)
     fake_cloud["111"].on_message(
@@ -201,25 +207,25 @@ async def test_entities_push_scan(hass: HomeAssistant, fake_cloud) -> None:
         }
     )
     await hass.async_block_till_done()
-    assert hass.states.get("sensor.lave_linge_temps_restant").state == "87"
-    assert hass.states.get("sensor.lave_linge_etat").state == "Lavage"
-    assert hass.states.get("binary_sensor.lave_linge_cycle_en_cours").state == "on"
-    assert hass.states.get("sensor.lave_linge_fin_prevue").state not in (
+    assert hass.states.get("sensor.lave_linge_l9_temps_restant").state == "87"
+    assert hass.states.get("sensor.lave_linge_l9_etat").state == "Lavage"
+    assert hass.states.get("binary_sensor.lave_linge_l9_cycle_en_cours").state == "on"
+    assert hass.states.get("sensor.lave_linge_l9_fin_prevue").state not in (
         "unknown",
         "unavailable",
     )
     # unmapped pushed property becomes a raw diagnostic sensor
-    assert hass.states.get("sensor.lave_linge_propriete_6_3").state == "40"
+    assert hass.states.get("sensor.lave_linge_l9_propriete_6_3").state == "40"
 
     # Scan
     await hass.services.async_call(
         "button",
         "press",
-        {"entity_id": "button.lave_linge_scanner_les_proprietes"},
+        {"entity_id": "button.lave_linge_l9_scanner_les_proprietes"},
         blocking=True,
     )
     await hass.async_block_till_done()
-    assert hass.states.get("sensor.lave_linge_propriete_4_2").state == "12"
+    assert hass.states.get("sensor.lave_linge_l9_propriete_4_2").state == "12"
     # the notification lives in its own registry on recent HA versions
 
     assert await hass.config_entries.async_unload(entry.entry_id)
@@ -265,8 +271,8 @@ async def test_keep_awake_and_power(hass: HomeAssistant, fake_cloud) -> None:
     await hass.async_block_till_done()
 
     washer = fake_cloud["111"]
-    assert hass.states.get("sensor.lave_linge_etat").state == "Veille"
-    assert hass.states.get("sensor.lave_linge_energie_du_cycle").state == "0.12"
+    assert hass.states.get("sensor.lave_linge_l9_etat").state == "Veille"
+    assert hass.states.get("sensor.lave_linge_l9_energie_du_cycle").state == "0.12"
 
     # appliance went to sleep / off -> keep-awake turns it back on and fixes auto-off
     washer.props["2.1"] = False
@@ -280,17 +286,17 @@ async def test_keep_awake_and_power(hass: HomeAssistant, fake_cloud) -> None:
     await hass.services.async_call(
         "switch",
         "turn_off",
-        {"entity_id": "switch.lave_linge_alimentation"},
+        {"entity_id": "switch.lave_linge_l9_alimentation"},
         blocking=True,
     )
     assert (2, 1, False) in washer.writes
-    assert hass.states.get("switch.lave_linge_maintenir_eveille").state == "off"
+    assert hass.states.get("switch.lave_linge_l9_maintenir_eveille").state == "off"
     washer.writes.clear()
     await coordinator._async_keep_awake_tick()
     assert washer.writes == []
 
     # dryer has no user mapping -> no writable entity
-    assert hass.states.get("switch.seche_linge_alimentation") is None
+    assert hass.states.get("switch.seche_linge_l9_alimentation") is None
 
 
 async def test_options_invalid_mapping(hass: HomeAssistant, fake_cloud) -> None:
@@ -319,7 +325,7 @@ async def test_options_invalid_mapping(hass: HomeAssistant, fake_cloud) -> None:
     )
     assert result["type"] is FlowResultType.CREATE_ENTRY
     await hass.async_block_till_done()
-    assert hass.states.get("sensor.lave_linge_progression") is not None
+    assert hass.states.get("sensor.lave_linge_l9_progression") is not None
 
 
 async def test_diagnostics(hass: HomeAssistant, fake_cloud) -> None:
@@ -355,7 +361,7 @@ async def test_end_time_known_at_startup(hass: HomeAssistant, fake_cloud) -> Non
         get_props.side_effect = _props
         assert await hass.config_entries.async_setup(entry.entry_id)
         await hass.async_block_till_done()
-    assert hass.states.get("sensor.lave_linge_fin_prevue").state not in (
+    assert hass.states.get("sensor.lave_linge_l9_fin_prevue").state not in (
         "unknown",
         "unavailable",
     )
@@ -379,7 +385,7 @@ async def test_write_auth_failure_starts_reauth(
         await hass.services.async_call(
             "switch",
             "turn_off",
-            {"entity_id": "switch.lave_linge_alimentation"},
+            {"entity_id": "switch.lave_linge_l9_alimentation"},
             blocking=True,
         )
     await hass.async_block_till_done()
@@ -402,13 +408,13 @@ async def test_appliance_off_at_startup_does_not_block_setup(
         assert await hass.config_entries.async_setup(entry.entry_id)
         await hass.async_block_till_done()
     assert entry.state is config_entries.ConfigEntryState.LOADED
-    assert hass.states.get("binary_sensor.lave_linge_joignable").state == "off"
+    assert hass.states.get("binary_sensor.lave_linge_l9_joignable").state == "off"
 
     # the appliance wakes up: values come back on the next poll
     await entry.runtime_data["111"].async_refresh()
     await hass.async_block_till_done()
-    assert hass.states.get("binary_sensor.lave_linge_joignable").state == "on"
-    assert hass.states.get("sensor.lave_linge_etat").state == "Arrêt"
+    assert hass.states.get("binary_sensor.lave_linge_l9_joignable").state == "on"
+    assert hass.states.get("sensor.lave_linge_l9_etat").state == "Arrêt"
 
 
 async def test_cloud_unreachable_retries_setup(hass: HomeAssistant, fake_cloud) -> None:

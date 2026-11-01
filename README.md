@@ -110,6 +110,10 @@ Vérifie que **Maintenir éveillé** est activé et que les propriétés `power`
 
 ## Entités
 
+Les appareils sont nommés d'après leur type et leur modèle : **Lave-linge L9**, **Sèche-linge L9** (le modèle est tiré de l'identifiant Dreame, ex. `dreame.washer.l9nacn` → `L9`). Les entités suivent : « Lave-linge L9 Temps restant », `sensor.lave_linge_l9_temps_restant`, etc.
+
+Sur une installation existante, Home Assistant garde les anciens identifiants d'entité (ex. `sensor.moumouss_etat`) pour ne pas casser les tableaux de bord et automatisations. Pour les aligner : *Paramètres → Appareils et services → Appareils →* l'appareil *→ ✏️ Renommer*, garde le nom proposé, et accepte quand HA propose de **renommer aussi les ID d'entité** (puis mets à jour tes cartes).
+
 Capteurs : état, défaut, programme, temps restant, fin prévue, progression, puissance, énergie, eau, température, essorage, niveau de séchage, plus les `Propriété x.y` brutes.
 Capteurs binaires : cycle en cours, joignable, porte, sécurité enfant.
 Commutateurs : maintenir éveillé, alimentation. Boutons : scanner les propriétés, actualiser.

@@ -143,5 +143,13 @@
         "name": "Actualiser"
       }
     }
+  },
+  "device": {
+    "washer": {
+      "name": "Lave-linge {model}"
+    },
+    "dryer": {
+      "name": "Sèche-linge {model}"
+    }
   }
 }

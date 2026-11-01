@@ -121,3 +121,12 @@ def test_washer_defaults_from_survey():
     assert m["status"].extra["running_states"] == [1, 2, 3]
     assert m["remaining_time"].code == "2.11"
     assert "program" not in m and "fault" not in m
+
+
+def test_short_model():
+    from custom_components.dreame_laundry.models import short_model
+
+    assert short_model("dreame.washer.l9nacn") == "L9"
+    assert short_model("dreame.dryer.l9nacn") == "L9"
+    assert short_model("dreame.washer.w10pro") == "W10"
+    assert short_model("weird") == "WEIRD"

@@ -139,6 +139,13 @@ class PropSpec:
         return value
 
 
+def short_model(model: str) -> str:
+    """Commercial model from the cloud model id: "dreame.washer.l9nacn" -> "L9"."""
+    last = (model or "").rsplit(".", 1)[-1]
+    match = re.match(r"^([a-z]+\d+)", last.lower())
+    return (match.group(1) if match else last).upper()
+
+
 def guess_kind(model: str) -> str:
     model = (model or "").lower()
     if "dryer" in model or ".dry" in model or "drying" in model:

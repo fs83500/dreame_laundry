@@ -143,5 +143,13 @@
         "name": "Refresh"
       }
     }
+  },
+  "device": {
+    "washer": {
+      "name": "Washer {model}"
+    },
+    "dryer": {
+      "name": "Dryer {model}"
+    }
   }
 }

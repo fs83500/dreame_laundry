@@ -36,7 +36,10 @@ Chaque version est publiée comme une **release GitHub taggée `vX.Y.Z`** (voir 
 
 ## Première étape obligatoire : le scan des propriétés
 
-Dreame ne publie pas la liste des propriétés (siid/piid) de ses lave-linge et sèche-linge. Au départ, quelques correspondances **supposées** existent (état `2.2`, défaut `2.3`, programme `2.4`) ; elles portent l'attribut `mapping: guess`. Le temps restant `2.11` est **confirmé** sur lave-linge (vérifié le 31/10/2026) ; sur sèche-linge il reste supposé (`2.5`).
+Dreame ne publie pas la liste des propriétés (siid/piid) de ses lave-linge et sèche-linge. Au départ, quelques correspondances **supposées** existent ; elles portent l'attribut `mapping: guess`.
+
+- **Lave-linge** : état `2.2`, défaut `2.3`, programme `2.4` (supposés), temps restant `2.11` (**confirmé** le 31/10/2026).
+- **Sèche-linge** (relevé sur `dreame.dryer.l9nacn`, 01/11/2026) : programme `2.3` (**confirmé**), état `2.1` (1 = Arrêt, 3 = En cours) et temps restant `2.11` (probables). Pas encore de propriété « défaut » identifiée.
 
 1. Appareil allumé, appuie sur **Scanner les propriétés** (entité de diagnostic). Une notification liste toutes les propriétés qui répondent, et chacune devient un capteur `Propriété x.y`.
 2. Lance un cycle et regarde quels capteurs `Propriété x.y` bougent : temps restant qui décroît, état qui change, compteur d'énergie qui monte.
@@ -54,7 +57,7 @@ Exemple :
     "auto_power_off": {"prop": "2.20", "keep_value": 0}
   },
   "dryer": {
-    "remaining_time": "2.5",
+    "remaining_time": "2.11",
     "power_w": "3.4"
   }
 }

@@ -63,6 +63,8 @@ class FakeDevice:
         self.writes: list[tuple] = []
         self.mqtt_connected = True
         self.logged_in = True
+        if did == "222":  # dryer: 2.1 = state (3 = running)
+            self.props["2.1"] = 3
         FakeDevice.instances[did] = self
 
     def ensure_connected(self, on_message, on_connected=None):
@@ -175,6 +177,10 @@ async def test_entities_push_scan(hass: HomeAssistant, fake_cloud) -> None:
         "switch.lave_linge_alimentation" not in states
     )  # power not mapped -> no write
     assert states["binary_sensor.seche_linge_joignable"].state == "on"
+    # dryer: 2.1 = 3 is "running" even though remaining time 2.11 is 0
+    assert states["sensor.seche_linge_etat"].state == "En cours"
+    assert states["binary_sensor.seche_linge_cycle_en_cours"].state == "on"
+    assert "sensor.seche_linge_defaut" not in states
 
     # MQTT push: cycle starts (washer remaining time is 2.11)
     fake_cloud["111"].on_message(

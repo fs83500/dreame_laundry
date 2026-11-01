@@ -2,8 +2,9 @@
 
 Dreame does not publish the MIoT spec of its washers/dryers. Most defaults below are
 read-only guesses following the usual MIoT "washer" service layout and MUST be checked
-with the "Scan properties" button (status, fault, program, and remaining_time on dryers).
-"remaining_time": "2.11" is CONFIRMED on washer hardware (2026-10-31).
+with the "Scan properties" button.
+"remaining_time": "2.11" is CONFIRMED on washer hardware (2026-10-31); dryer defaults
+come from a property survey on dreame.dryer.l9nacn (2026-11-01).
 Writable keys (power, auto_power_off) are never guessed: they only exist once you
 declare them in the integration options.
 
@@ -58,12 +59,17 @@ _GUESS_WASHER = {
     # Confirmed 2026-10-31 on a real washer: 2.11 = remaining minutes.
     "remaining_time": "2.11",
 }
+# From a property survey on dreame.dryer.l9nacn (2026-11-01): 2.3 = program
+# (confirmed), 2.1 = state (1 = stopped, 3 = running, probable), 2.11 = remaining
+# minutes (probable). No fault property identified yet.
 _GUESS_DRYER = {
-    "status": "2.2",
-    "fault": "2.3",
-    "program": "2.4",
-    # Unverified on dryer hardware: 2.11 is confirmed on washers only.
-    "remaining_time": "2.5",
+    "status": {
+        "prop": "2.1",
+        "map": {"1": "Arrêt", "3": "En cours"},
+        "running_states": [3],
+    },
+    "program": "2.3",
+    "remaining_time": "2.11",
 }
 DEFAULT_MAPPINGS: dict[str, dict[str, Any]] = {
     KIND_WASHER: dict(_GUESS_WASHER),

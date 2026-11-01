@@ -93,3 +93,14 @@ def test_offset_without_scale():
     assert m["status"].convert(3) == 3  # no scale, no offset: untouched
     with pytest.raises(MappingError):
         validate_overrides({"washer": {"temperature": {"prop": "2.7", "offset": "x"}}})
+
+
+def test_dryer_defaults_from_survey():
+    m = build_mapping("dryer", "1", {})
+    assert m["program"].code == "2.3"
+    assert m["remaining_time"].code == "2.11"
+    assert m["status"].code == "2.1"
+    assert m["status"].convert(1) == "Arrêt"
+    assert m["status"].convert(3) == "En cours"
+    assert m["status"].extra["running_states"] == [3]
+    assert "fault" not in m

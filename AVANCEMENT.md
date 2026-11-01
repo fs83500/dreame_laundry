@@ -18,7 +18,8 @@ Dépôt : https://git.dpnac.cloud/fabien.solvez/dreame (forge Forgejo de Fabien)
 ## Reste à faire
 - [ ] Recette continue sur machine réelle : confirmer les autres mappings (état 2.2, défaut 2.3, programme 2.4, énergie, eau, progression…)
 - [ ] Fabien observe les capteurs `Propriété x.y` pendant un cycle complet → diff → mapping JSON complet
-- [ ] Optionnel : miroir push forge → GitHub si l'installation via HACS est souhaitée
+- [ ] **SYNCHRONISATION RETOUR FORGE** : le commit `6b6fca9` (URLs HACS → GitHub) n'existe que sur GitHub. Sur le serveur (forge) : `git fetch https://github.com/fs83500/dreame_laundry.git main && git merge --ff-only FETCH_HEAD && git push origin main` (fast-forward depuis 2903a4e, aucun conflit). Codex ne peut pas pousser sur git.dpnac.cloud (pas de credentials Forgejo dans son sandbox).
+- [ ] Optionnel : miroir automatique forge → GitHub à chaque release (l'installation via HACS impose GitHub)
 
 ## Décisions
 - HACS ne supporte que GitHub (code source vérifié) : la forge Forgejo ne peut PAS être un dépôt personnalisé HACS. Installation manuelle = référence.

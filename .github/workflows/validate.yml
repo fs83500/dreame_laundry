@@ -22,8 +22,8 @@ jobs:
       - uses: hacs/action@main
         with:
           category: integration
-          # brands: domain not in home-assistant/brands; description/topics: set on the GitHub repo page
-          ignore: brands description topics
+          # description/topics: set on the GitHub repo page (About section)
+          ignore: description topics
 
   tests:
     name: Tests

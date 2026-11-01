@@ -15,8 +15,7 @@
   ],
   "requirements": [
     "paho-mqtt>=1.6.1",
-    "pycryptodome>=3.20",
-    "cryptography>=42.0.0"
+    "pycryptodome>=3.20"
   ],
   "version": "0.1.3"
 }

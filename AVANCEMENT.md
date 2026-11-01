@@ -7,7 +7,7 @@ Dépôt : https://git.dpnac.cloud/fabien.solvez/dreame (forge Forgejo de Fabien)
 ## Fait
 - [x] Analyse complète du zip d'origine (architecture, sécurité, traductions, tests, lint)
 - [x] Restructuration dépôt : `hacs.json` + `README.md` + `pytest.ini` + `tests/` à la racine, intégration dans `custom_components/dreame_laundry/`
-- [x] Manifest : forge git.dpnac.cloud, codeowners `@fabien.solvez`, `cryptography>=42.0.0` ajouté aux requirements
+- [x] Manifest : forge git.dpnac.cloud, codeowners `@fabien.solvez` (`cryptography` retiré en v0.1.3 : déjà fourni par HA, refusé par hassfest)
 - [x] Qualité : ruff check + format OK (hors `cloud/` vendored Tasshack, MIT), compilation Python OK, JSON valides
 - [x] Push sur main : 24fb029 (v0.1.1) → f986b0e (URLs forge) → 526f687 (zip) → 2f0b571 (mapping 2.11)
 - [x] HACS ne supporte que GitHub → installation manuelle validée sur l'installation réelle (HA 2026.7.2)

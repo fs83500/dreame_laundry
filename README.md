@@ -8,6 +8,8 @@ Elle passe par le cloud Dreamehome (HTTP pour lire/écrire, MQTT pour les change
 
 ## Installation
 
+Prérequis : Home Assistant **2025.2** ou plus récent.
+
 ### Via HACS (recommandé)
 
 1. HACS → *⋮ (en haut à droite) → Dépôts personnalisés*.

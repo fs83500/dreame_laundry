@@ -54,6 +54,7 @@ class FakeDevice:
             "2.3": 0,
             "2.4": 5,
             "2.5": 0,
+            "2.11": 0,
             "4.1": 0,
             "4.2": 12,
         }
@@ -172,12 +173,12 @@ async def test_entities_push_scan(hass: HomeAssistant, fake_cloud) -> None:
     )  # power not mapped -> no write
     assert states["binary_sensor.seche_linge_joignable"].state == "on"
 
-    # MQTT push: cycle starts
+    # MQTT push: cycle starts (washer remaining time is 2.11)
     fake_cloud["111"].on_message(
         {
             "method": "properties_changed",
             "params": [
-                {"siid": 2, "piid": 5, "value": 87},
+                {"siid": 2, "piid": 11, "value": 87},
                 {"siid": 6, "piid": 3, "value": 40},
             ],
         }

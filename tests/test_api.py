@@ -28,8 +28,8 @@ class FakeProto:
         self._client_connected = True
         return {"online": True, "model": "x"}
 
-    def send(self, method, params):
-        self.calls.append((method, len(params)))
+    def send(self, method, params, retry_count=2, timeout=None):
+        self.calls.append((method, len(params), timeout))
         if method == "get_properties":
             return [
                 {
@@ -56,10 +56,14 @@ def test_get_props_batches_and_filters():
         values = dev.get_props([(2, p) for p in range(1, 46)])
         assert values == {"2.1": 1, "2.2": 2}
         assert [c for c in dev._proto.calls if c != "connect"] == [
-            ("get_properties", 20),
-            ("get_properties", 20),
-            ("get_properties", 5),
+            ("get_properties", 20, None),
+            ("get_properties", 20, None),
+            ("get_properties", 5, None),
         ]
+        # explicit timeout is forwarded to the vendored client
+        dev._proto.calls.clear()
+        dev.get_props([(2, 1)], timeout=15)
+        assert dev._proto.calls == [("get_properties", 1, 15)]
         assert dev.set_prop(2, 1, True) is True
         dev._proto.send = lambda *a: None
         with pytest.raises(CannotConnect):

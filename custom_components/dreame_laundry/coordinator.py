@@ -130,7 +130,11 @@ class LaundryCoordinator(DataUpdateCoordinator[dict[str, Any]]):
 
     def _sync_update(self) -> dict[str, Any]:
         self.client.ensure_connected(self._on_push_thread, None)
-        return self.client.get_props(self._codes_to_poll())
+        # First poll happens on a cold TLS session (fresh login) and includes
+        # every discovered property: give it a wider read timeout than the
+        # vendored default (6 s) to avoid a burst of read-timeout warnings at startup.
+        timeout: float | None = 15 if self._poll_count == 0 else None
+        return self.client.get_props(self._codes_to_poll(), timeout=timeout)
 
     async def _async_update_data(self) -> dict[str, Any]:
         try:

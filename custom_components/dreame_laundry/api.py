@@ -99,14 +99,19 @@ class LaundryCloudDevice:
         self._info_time = time.monotonic()
         return info
 
-    def get_props(self, codes: Iterable[tuple[int, int]]) -> dict[str, Any]:
-        """Read properties, returns {"siid.piid": value} for the ones that answered."""
+    def get_props(
+        self, codes: Iterable[tuple[int, int]], timeout: float | None = None
+    ) -> dict[str, Any]:
+        """Read properties, returns {"siid.piid": value} for the ones that answered.
+
+        ``timeout``: read timeout per request; None keeps the vendored default (6 s).
+        """
         codes = list(codes)
         values: dict[str, Any] = {}
         for i in range(0, len(codes), BATCH_SIZE):
             batch = codes[i : i + BATCH_SIZE]
             params = [{"did": self.did, "siid": s, "piid": p} for s, p in batch]
-            result = self._proto.send("get_properties", params)
+            result = self._proto.send("get_properties", params, timeout=timeout)
             if result is None:
                 if self._proto.auth_failed:
                     raise InvalidAuth

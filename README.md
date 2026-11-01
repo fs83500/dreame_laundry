@@ -77,6 +77,8 @@ Sans `power` / `auto_power_off` mappés, l'intégration n'écrit **jamais** rien
 
 C'est le bruit attendu quand la machine est **éteinte ou en sommeil profond** : le module Wi-Fi se coupe, le cloud Dreamehome répond mais l'appareil ne joint pas dans les 6 s impartis (l'appel est réessayé jusqu'à 2 fois, d'où plusieurs lignes). Tant que le capteur **Joignable** repasse à « Oui » quand tu allumes la machine — ou grâce au maintien en éveil — rien n'est cassé : les entités gardent leurs dernières valeurs entre-temps.
 
+Un léger burst au **démarrage de Home Assistant** (ou au rechargement de l'intégration) peut aussi apparaître : le premier rafraîchissement part sur une session toute neuve et interroge toutes les propriétés découvertes. Depuis la **v0.1.4**, ce premier appel dispose d'un timeout élargi (15 s) et le bruit de démarrage a fortement diminué.
+
 Si ces avertissements répétés polluent ton journal, réduis la verbosité de la couche réseau dans `configuration.yaml` :
 
 ```yaml

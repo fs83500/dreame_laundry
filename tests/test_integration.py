@@ -48,6 +48,7 @@ class FakeDevice:
     def __init__(self, username, password, country, did) -> None:
         self.did = did
         self.info = {"online": True}
+        self.timeouts: list[float | None] = []
         self.props: dict[str, Any] = {
             "2.1": True,
             "2.2": 1,
@@ -67,7 +68,8 @@ class FakeDevice:
         self.on_message = on_message
         return self.info
 
-    def get_props(self, codes):
+    def get_props(self, codes, timeout=None):
+        self.timeouts.append(timeout)
         return {
             f"{s}.{p}": self.props[f"{s}.{p}"]
             for s, p in codes
@@ -205,6 +207,25 @@ async def test_entities_push_scan(hass: HomeAssistant, fake_cloud) -> None:
     # the notification lives in its own registry on recent HA versions
 
     assert await hass.config_entries.async_unload(entry.entry_id)
+
+
+async def test_first_poll_wider_timeout_then_default(
+    hass: HomeAssistant, fake_cloud
+) -> None:
+    """Startup poll runs on a cold session and includes every discovered
+    property: it must use a wider read timeout (15 s) than the vendored
+    default, then fall back to it."""
+    entry = _entry()
+    entry.add_to_hass(hass)
+    assert await hass.config_entries.async_setup(entry.entry_id)
+    await hass.async_block_till_done()
+
+    washer = fake_cloud["111"]
+    assert washer.timeouts[0] == 15
+    coordinator = entry.runtime_data["111"]
+    await coordinator.async_refresh()
+    await hass.async_block_till_done()
+    assert washer.timeouts[-1] is None
 
 
 async def test_keep_awake_and_power(hass: HomeAssistant, fake_cloud) -> None:

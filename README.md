@@ -24,6 +24,16 @@ Prérequis : Home Assistant **2025.2** ou plus récent.
 1. Copie `custom_components/dreame_laundry` dans `/config/custom_components/`.
 2. Redémarre Home Assistant, puis comme ci-dessus (étapes 5-6).
 
+## Mises à jour
+
+Chaque version est publiée comme une **release GitHub taggée `vX.Y.Z`** (voir [Releases](https://github.com/fs83500/dreame_laundry/releases)), avec l'archive d'installation `dreame_laundry-X.Y.Z.zip` (et sa signature sha256) en pièce jointe.
+
+- **Via HACS** : mets à jour depuis HACS quand il te propose la nouvelle version (il lit le `manifest.json` du dépôt ; les versions apparaissent dans *HACS → Intégrations → Dreame Laundry → mettre à jour*).
+- **Manuellement** : télécharge l'archive de la release, remplace le dossier `custom_components/dreame_laundry`, redémarre HA.
+- **Historique** : le détail des changements de chaque version est dans [AVANCEMENT.md](https://github.com/fs83500/dreame_laundry/blob/main/AVANCEMENT.md).
+
+**Processus de publication** (pour les mainteneurs) : le workflow GitHub Actions *Release* (onglet Actions → *Release* → *Run workflow*) crée le tag, la release et l'archive à partir de la version du `manifest.json` — il refuse de publier si la version saisie ne correspond pas au manifest. Le dépôt de développement reste la [forge git.dpnac.cloud](https://git.dpnac.cloud/fabien.solvez/dreame) ; GitHub est le miroir de publication (HACS n'accepte que GitHub).
+
 ## Première étape obligatoire : le scan des propriétés
 
 Dreame ne publie pas la liste des propriétés (siid/piid) de ses lave-linge et sèche-linge. Au départ, quelques correspondances **supposées** existent (état `2.2`, défaut `2.3`, programme `2.4`) ; elles portent l'attribut `mapping: guess`. Le temps restant `2.11` est **confirmé** sur lave-linge (vérifié le 31/10/2026) ; sur sèche-linge il reste supposé (`2.5`).

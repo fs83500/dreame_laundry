@@ -78,3 +78,7 @@ Capteurs binaires : cycle en cours, joignable, porte, sécurité enfant.
 Commutateurs : maintenir éveillé, alimentation. Boutons : scanner les propriétés, actualiser.
 
 Le téléchargement des diagnostics (page de l'intégration) contient le mapping, les valeurs et les propriétés découvertes, identifiants masqués.
+
+## Licence
+
+MIT, voir [LICENSE](LICENSE). Le client cloud dans `cloud/` reste sous la licence MIT de Tasshack (`cloud/LICENSE.tasshack`).

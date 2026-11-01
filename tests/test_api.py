@@ -75,11 +75,13 @@ def test_mapping():
         "washer",
         "9",
         {
-            "washer": {"fault": None, "power_w": {"prop": "3.4", "scale": 0.1}},
+            "washer": {"status": None, "power_w": {"prop": "3.4", "scale": 0.1}},
             "9": {"program": "7.1"},
         },
     )
-    assert "fault" not in m and m["status"].code == "2.2" and m["program"].code == "7.1"
+    # null removes a default, the device id section wins over the kind
+    assert "status" not in m
+    assert m["remaining_time"].code == "2.11" and m["program"].code == "7.1"
     assert m["power_w"].convert(1234) == 123.4
     with pytest.raises(MappingError):
         validate_overrides({"washer": {"status": "abc"}})
@@ -90,7 +92,7 @@ def test_offset_without_scale():
         "washer", "9", {"washer": {"temperature": {"prop": "2.7", "offset": -40}}}
     )
     assert m["temperature"].convert(70) == 30
-    assert m["status"].convert(3) == 3  # no scale, no offset: untouched
+    assert m["remaining_time"].convert(3) == 3  # no scale, no offset: untouched
     with pytest.raises(MappingError):
         validate_overrides({"washer": {"temperature": {"prop": "2.7", "offset": "x"}}})
 
@@ -104,3 +106,18 @@ def test_dryer_defaults_from_survey():
     assert m["status"].convert(3) == "En cours"
     assert m["status"].extra["running_states"] == [3]
     assert "fault" not in m
+
+
+def test_washer_defaults_from_survey():
+    m = build_mapping("washer", "1", {})
+    assert m["status"].code == "2.4"
+    assert [m["status"].convert(v) for v in (1, 2, 3, 6, 8)] == [
+        "Lavage",
+        "Rinçage",
+        "Essorage",
+        "Terminé",
+        "Arrêt",
+    ]
+    assert m["status"].extra["running_states"] == [1, 2, 3]
+    assert m["remaining_time"].code == "2.11"
+    assert "program" not in m and "fault" not in m

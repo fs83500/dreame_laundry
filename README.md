@@ -38,7 +38,7 @@ Chaque version est publiée comme une **release GitHub taggée `vX.Y.Z`** (voir 
 
 Dreame ne publie pas la liste des propriétés (siid/piid) de ses lave-linge et sèche-linge. Au départ, quelques correspondances **supposées** existent ; elles portent l'attribut `mapping: guess`.
 
-- **Lave-linge** : état `2.2`, défaut `2.3`, programme `2.4` (supposés), temps restant `2.11` (**confirmé** le 31/10/2026).
+- **Lave-linge** (relevé sur `dreame.washer.l9nacn`, 01/11/2026) : état = phase `2.4` (1 = Lavage, 2 = Rinçage, 3 = Essorage, 6 = Terminé, 8 = Arrêt ; **confirmé** sauf Lavage, probable), temps restant `2.11` (**confirmé**). À l'arrêt, `2.11` affiche la durée du programme sélectionné : « Cycle en cours » se base donc sur la phase. Programme et défaut pas encore identifiés.
 - **Sèche-linge** (relevé sur `dreame.dryer.l9nacn`, 01/11/2026) : programme `2.3` (**confirmé**), état `2.1` (1 = Arrêt, 3 = En cours) et temps restant `2.11` (probables). Pas encore de propriété « défaut » identifiée.
 
 1. Appareil allumé, appuie sur **Scanner les propriétés** (entité de diagnostic). Une notification liste toutes les propriétés qui répondent, et chacune devient un capteur `Propriété x.y`.

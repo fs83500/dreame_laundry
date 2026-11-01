@@ -36,3 +36,6 @@ jobs:
       - run: pip install pytest-homeassistant-custom-component paho-mqtt pycryptodome ruff
       - run: ruff check --exclude custom_components/dreame_laundry/cloud .
       - run: pytest -q
+      - name: Job summary on failure
+        if: failure()
+        run: pytest -q 2>&1 | tail -60 >> "$GITHUB_STEP_SUMMARY" || true

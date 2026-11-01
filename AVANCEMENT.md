@@ -47,5 +47,30 @@ Dépôt : https://git.dpnac.cloud/fabien.solvez/dreame (forge Forgejo de Fabien)
 - `2.11` = temps restant (minutes) — confirmé par observation (décroît pendant le cycle)
 - `1.4` = version du firmware — relevée par Fabien le 01/11/2026 (capteur « Propriété 1.4 »). Conforme au service MIoT standard « device information » (siid 1), où `1.1` = fabricant, `1.2` = modèle, `1.3` = n° de série, `1.4` = firmware.
 
+### Scan complet lave-linge `dreame.washer.l9nacn` (« Moumouss »), 01/11/2026, pendant un cycle (2.11 = 47 min restantes)
+29 propriétés répondent :
+
+| siid.piid | valeur | hypothèse (à confirmer par un 2ᵉ scan à l'arrêt) |
+|---|---|---|
+| 1.4 | `"0.1.1_3017"` | **firmware (confirmé)** |
+| 1.5 | `"12345678"` | valeur factice (n° de série non renseigné ?) |
+| 2.1 | 3 | **candidat « état »** (≠ 0 pendant le cycle) |
+| 2.2 | 0 | ⚠️ mapping par défaut « état » — vaut 0 en plein cycle : probablement faux |
+| 2.3 | 0 | défaut (0 = aucun) plausible |
+| 2.4 | 1 | programme ? |
+| 2.5 | 0 | — |
+| 2.8 | 3 | niveau (température / essorage / saleté ?) |
+| 2.11 | 47 | **temps restant (confirmé)** |
+| 2.12 | 87 | durée totale du cycle (min) ? → progression ≈ (87−47)/87 |
+| 2.13 | 47 | = 2.11 : temps restant affiché / fin différée ? |
+| 2.14, 2.15, 2.19 | 0 | — |
+| 2.16 | 1 | option activée (booléen ?) |
+| 2.18, 2.24, 2.25 | 4 | réglages (niveaux) ? |
+| 3.4–3.9, 3.13, 3.14 | 0 / 3.7 = 1 | service 3 : options / dosage ? |
+| 4.6, 4.7 | 0 | — |
+| 5.1 | 0 | — |
+
+Prochaine étape : un scan **machine allumée à l'arrêt** (et si possible à une autre phase du cycle) pour comparer — ce qui change entre les deux identifie état, phase et programme.
+
 ## Journal de terrain
 - **01/11/2026 09:12** — retour de terrain : 8× `Error while executing request: Read timed out. (timeout=6)` en ~1 min (`cloud/protocol.py:1403`, WARNING). Diagnostic : timeout de lecture HTTP (6 s, 2 réessais) quand la machine est éteinte/Wi-Fi coupé — flux poll 30 s + keep-awake 60 s. Comportement prévu (UpdateFailed → dernières valeurs conservées, capteur Joignable → Non). Pas un bug ; vendored inchangé (décision projet). Section « Dépannage » ajoutée au README (explication + recette `logger:` pour masquer le bruit).

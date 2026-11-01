@@ -71,6 +71,24 @@ Sans `power` / `auto_power_off` mappés, l'intégration n'écrit **jamais** rien
 
 À savoir : selon le firmware, le module Wi-Fi peut se couper complètement à l'extinction ; dans ce cas aucune commande cloud ne peut le réveiller, et seule la désactivation de l'arrêt automatique (si l'appareil l'expose) fonctionne. Le capteur **Joignable** indique si l'appareil répond.
 
+## Dépannage
+
+### `Error while executing request: Read timed out. (timeout=6)` dans le journal
+
+C'est le bruit attendu quand la machine est **éteinte ou en sommeil profond** : le module Wi-Fi se coupe, le cloud Dreamehome répond mais l'appareil ne joint pas dans les 6 s impartis (l'appel est réessayé jusqu'à 2 fois, d'où plusieurs lignes). Tant que le capteur **Joignable** repasse à « Oui » quand tu allumes la machine — ou grâce au maintien en éveil — rien n'est cassé : les entités gardent leurs dernières valeurs entre-temps.
+
+Si ces avertissements répétés polluent ton journal, réduis la verbosité de la couche réseau dans `configuration.yaml` :
+
+```yaml
+logger:
+  logs:
+    custom_components.dreame_laundry.cloud.protocol: debug
+```
+
+### L'appareil ne se réveille jamais
+
+Vérifie que **Maintenir éveillé** est activé et que les propriétés `power` / `auto_power_off` sont mappées (sinon l'intégration n'écrit jamais sur l'appareil). Certains firmwares coupent totalement le Wi-Fi à l'extinction : dans ce cas seul `auto_power_off` peut aider, ou rallumer la machine manuellement avant de la commander.
+
 ## Entités
 
 Capteurs : état, défaut, programme, temps restant, fin prévue, progression, puissance, énergie, eau, température, essorage, niveau de séchage, plus les `Propriété x.y` brutes.

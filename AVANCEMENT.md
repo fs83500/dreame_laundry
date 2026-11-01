@@ -36,3 +36,6 @@ Dépôt : https://git.dpnac.cloud/fabien.solvez/dreame (forge Forgejo de Fabien)
 
 ## Correspondance propriétés découverte (lave-linge Fabien, 31/10/2026)
 - `2.11` = temps restant (minutes) — confirmé par observation (décroît pendant le cycle)
+
+## Journal de terrain
+- **01/11/2026 09:12** — retour de terrain : 8× `Error while executing request: Read timed out. (timeout=6)` en ~1 min (`cloud/protocol.py:1403`, WARNING). Diagnostic : timeout de lecture HTTP (6 s, 2 réessais) quand la machine est éteinte/Wi-Fi coupé — flux poll 30 s + keep-awake 60 s. Comportement prévu (UpdateFailed → dernières valeurs conservées, capteur Joignable → Non). Pas un bug ; vendored inchangé (décision projet). Section « Dépannage » ajoutée au README (explication + recette `logger:` pour masquer le bruit).

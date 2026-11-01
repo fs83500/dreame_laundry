@@ -13,7 +13,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.data_entry_flow import FlowResultType
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
-from custom_components.dreame_laundry.api import InvalidAuth
+from custom_components.dreame_laundry.api import CannotConnect, InvalidAuth
 from custom_components.dreame_laundry.const import (
     CONF_COUNTRY,
     CONF_DEVICES,
@@ -62,6 +62,7 @@ class FakeDevice:
         self.on_message = None
         self.writes: list[tuple] = []
         self.mqtt_connected = True
+        self.logged_in = True
         FakeDevice.instances[did] = self
 
     def ensure_connected(self, on_message, on_connected=None):
@@ -368,3 +369,41 @@ async def test_write_auth_failure_starts_reauth(
     await hass.async_block_till_done()
     flows = hass.config_entries.flow.async_progress()
     assert any(f["context"]["source"] == "reauth" for f in flows)
+
+
+async def test_appliance_off_at_startup_does_not_block_setup(
+    hass: HomeAssistant, fake_cloud
+) -> None:
+    """Logged in, but the appliance (off / asleep) does not answer: the entry
+    loads and the appliance is shown as not reachable."""
+
+    def _asleep(self, codes, timeout=None):
+        raise CannotConnect
+
+    entry = _entry()
+    entry.add_to_hass(hass)
+    with patch.object(FakeDevice, "get_props", _asleep):
+        assert await hass.config_entries.async_setup(entry.entry_id)
+        await hass.async_block_till_done()
+    assert entry.state is config_entries.ConfigEntryState.LOADED
+    assert hass.states.get("binary_sensor.lave_linge_joignable").state == "off"
+
+    # the appliance wakes up: values come back on the next poll
+    await entry.runtime_data["111"].async_refresh()
+    await hass.async_block_till_done()
+    assert hass.states.get("binary_sensor.lave_linge_joignable").state == "on"
+    assert hass.states.get("sensor.lave_linge_etat").state == "1"
+
+
+async def test_cloud_unreachable_retries_setup(hass: HomeAssistant, fake_cloud) -> None:
+    """Login / cloud connection failure is still a real setup failure."""
+
+    def _down(self, on_message, on_connected=None):
+        raise CannotConnect
+
+    entry = _entry()
+    entry.add_to_hass(hass)
+    with patch.object(FakeDevice, "ensure_connected", _down):
+        await hass.config_entries.async_setup(entry.entry_id)
+        await hass.async_block_till_done()
+    assert entry.state is config_entries.ConfigEntryState.SETUP_RETRY

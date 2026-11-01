@@ -97,6 +97,10 @@ logger:
     custom_components.dreame_laundry.cloud.protocol: error
 ```
 
+### « Échec de la configuration, nouvel essai : Dreamehome cloud unreachable »
+
+Avant la **v0.1.6**, une machine éteinte au démarrage de Home Assistant bloquait toute l'intégration avec ce message. Depuis la v0.1.6, elle se charge et l'appareil apparaît simplement « non joignable » jusqu'à ce qu'il réponde. Si le message persiste, c'est bien la connexion au cloud qui échoue : vérifie la région du compte et que tu arrives à te connecter dans l'appli Dreamehome.
+
 ### L'appareil ne se réveille jamais
 
 Vérifie que **Maintenir éveillé** est activé et que les propriétés `power` / `auto_power_off` sont mappées (sinon l'intégration n'écrit jamais sur l'appareil). Certains firmwares coupent totalement le Wi-Fi à l'extinction : dans ce cas seul `auto_power_off` peut aider, ou rallumer la machine manuellement avant de la commander.

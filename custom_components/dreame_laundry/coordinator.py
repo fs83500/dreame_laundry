@@ -134,7 +134,16 @@ class LaundryCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         # every discovered property: give it a wider read timeout than the
         # vendored default (6 s) to avoid a burst of read-timeout warnings at startup.
         timeout: float | None = 15 if self._poll_count == 0 else None
-        return self.client.get_props(self._codes_to_poll(), timeout=timeout)
+        try:
+            return self.client.get_props(self._codes_to_poll(), timeout=timeout)
+        except CannotConnect:
+            if not self.client.logged_in:
+                raise
+            # Logged in and the cloud answered the connect call: it is the
+            # appliance (off / asleep, Wi-Fi cut) that does not answer the
+            # property read. Not a setup failure, just "not reachable".
+            _LOGGER.debug("%s does not answer (off or asleep)", self.name)
+            return {}
 
     async def _async_update_data(self) -> dict[str, Any]:
         try:

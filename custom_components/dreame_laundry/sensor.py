@@ -186,8 +186,17 @@ class LaundryEndTimeSensor(LaundryEntity, SensorEntity):
         super().__init__(coordinator, "end_time")
         self._end: datetime | None = None
 
+    async def async_added_to_hass(self) -> None:
+        await super().async_added_to_hass()
+        self._update_end()
+
     @callback
     def _handle_coordinator_update(self) -> None:
+        self._update_end()
+        super()._handle_coordinator_update()
+
+    @callback
+    def _update_end(self) -> None:
         remaining = self.coordinator.value("remaining_time")
         if (
             isinstance(remaining, (int, float))
@@ -202,7 +211,6 @@ class LaundryEndTimeSensor(LaundryEntity, SensorEntity):
                 self._end = end
         else:
             self._end = None
-        super()._handle_coordinator_update()
 
     @property
     def native_value(self) -> datetime | None:

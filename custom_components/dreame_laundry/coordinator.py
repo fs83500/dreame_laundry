@@ -207,6 +207,9 @@ class LaundryCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             ok = await self.hass.async_add_executor_job(
                 self.client.set_prop, spec.siid, spec.piid, value
             )
+        except InvalidAuth as err:
+            self.config_entry.async_start_reauth(self.hass)
+            raise HomeAssistantError("Dreamehome login refused") from err
         except CannotConnect as err:
             raise HomeAssistantError("Dreamehome cloud unreachable") from err
         if not ok:
@@ -255,7 +258,8 @@ class LaundryCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         try:
             found = await self.hass.async_add_executor_job(self.client.get_props, codes)
         except InvalidAuth as err:
-            raise ConfigEntryAuthFailed from err
+            self.config_entry.async_start_reauth(self.hass)
+            raise HomeAssistantError("Dreamehome login refused") from err
         except CannotConnect as err:
             raise HomeAssistantError("Dreamehome cloud unreachable") from err
         if not found:

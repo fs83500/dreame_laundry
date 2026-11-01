@@ -83,3 +83,13 @@ def test_mapping():
     assert m["power_w"].convert(1234) == 123.4
     with pytest.raises(MappingError):
         validate_overrides({"washer": {"status": "abc"}})
+
+
+def test_offset_without_scale():
+    m = build_mapping(
+        "washer", "9", {"washer": {"temperature": {"prop": "2.7", "offset": -40}}}
+    )
+    assert m["temperature"].convert(70) == 30
+    assert m["status"].convert(3) == 3  # no scale, no offset: untouched
+    with pytest.raises(MappingError):
+        validate_overrides({"washer": {"temperature": {"prop": "2.7", "offset": "x"}}})

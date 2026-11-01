@@ -41,6 +41,6 @@ class LaundryEntity(CoordinatorEntity[LaundryCoordinator]):
         if self.key in self.coordinator.guessed:
             attrs["mapping"] = "guess, check with the property scan"
         raw = self.coordinator.raw(self.key)
-        if spec.value_map or spec.scale is not None:
+        if spec.value_map or spec.scale is not None or spec.offset:
             attrs["raw_value"] = raw
         return attrs

@@ -318,3 +318,53 @@ async def test_diagnostics(hass: HomeAssistant, fake_cloud) -> None:
     diag = await async_get_config_entry_diagnostics(hass, entry)
     assert diag["entry"][CONF_PASSWORD] == "**REDACTED**"
     assert diag["devices"][0]["mapping"]["status"] == "2.2"
+
+
+async def test_end_time_known_at_startup(hass: HomeAssistant, fake_cloud) -> None:
+    """A cycle already running when HA starts gives an end time right away."""
+    FakeDevice.instances.clear()
+    entry = _entry()
+    entry.add_to_hass(hass)
+    with patch.object(FakeDevice, "get_props", autospec=True) as get_props:
+
+        def _props(self, codes, timeout=None):
+            self.props["2.11"] = 42
+            return {
+                f"{s}.{p}": self.props[f"{s}.{p}"]
+                for s, p in codes
+                if f"{s}.{p}" in self.props
+            }
+
+        get_props.side_effect = _props
+        assert await hass.config_entries.async_setup(entry.entry_id)
+        await hass.async_block_till_done()
+    assert hass.states.get("sensor.lave_linge_fin_prevue").state not in (
+        "unknown",
+        "unavailable",
+    )
+
+
+async def test_write_auth_failure_starts_reauth(
+    hass: HomeAssistant, fake_cloud
+) -> None:
+    from homeassistant.exceptions import HomeAssistantError
+
+    entry = _entry(json.dumps({"washer": {"power": {"prop": "2.1", "on": True}}}))
+    entry.add_to_hass(hass)
+    assert await hass.config_entries.async_setup(entry.entry_id)
+    await hass.async_block_till_done()
+
+    def _refuse(*_):
+        raise InvalidAuth
+
+    fake_cloud["111"].set_prop = _refuse
+    with pytest.raises(HomeAssistantError):
+        await hass.services.async_call(
+            "switch",
+            "turn_off",
+            {"entity_id": "switch.lave_linge_alimentation"},
+            blocking=True,
+        )
+    await hass.async_block_till_done()
+    flows = hass.config_entries.flow.async_progress()
+    assert any(f["context"]["source"] == "reauth" for f in flows)

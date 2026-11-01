@@ -18,47 +18,51 @@ jobs:
   release:
     name: Tag + Release + archive
     runs-on: ubuntu-latest
+    env:
+      # inputs passed through the environment, never pasted into the scripts
+      VERSION: ${{ inputs.version }}
+      NOTES: ${{ inputs.notes }}
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v5
 
-      - name: Récupère la version du manifest
-        id: manifest
-        run: echo "version=$(python3 -c "import json;print(json.load(open('custom_components/dreame_laundry/manifest.json'))['version'])")" >> "$GITHUB_OUTPUT"
-
       - name: Cohérence version manifest vs saisie
         run: |
-          if [ "${{ steps.manifest.outputs.version }}" != "${{ inputs.version }}" ]; then
-            echo "::error::manifest=${{ steps.manifest.outputs.version }} mais version saisie=${{ inputs.version }} — mets à jour manifest.json d'abord"
+          if ! printf '%s' "$VERSION" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+$'; then
+            echo "::error::version invalide « $VERSION » (format attendu X.Y.Z)"
+            exit 1
+          fi
+          MANIFEST=$(python3 -c "import json;print(json.load(open('custom_components/dreame_laundry/manifest.json'))['version'])")
+          if [ "$MANIFEST" != "$VERSION" ]; then
+            echo "::error::manifest=$MANIFEST mais version saisie=$VERSION — mets à jour manifest.json d'abord"
             exit 1
           fi
 
       - name: Archive d'installation (custom_components uniquement)
         run: |
           cd custom_components
-          zip -r "../dreame_laundry-${{ inputs.version }}.zip" dreame_laundry -x '*__pycache__*'
+          zip -r "../dreame_laundry-$VERSION.zip" dreame_laundry -x '*__pycache__*'
           cd ..
-          sha256sum "dreame_laundry-${{ inputs.version }}.zip" > "dreame_laundry-${{ inputs.version }}.zip.sha256"
+          sha256sum "dreame_laundry-$VERSION.zip" > "dreame_laundry-$VERSION.zip.sha256"
 
       - name: Tag + Release GitHub
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          TAG="v${{ inputs.version }}"
-          # tag (idempotent : ne recrée pas s'il existe déjà sur ce commit)
-          if ! git rev-parse -q --verify "refs/tags/$TAG" >/dev/null; then
+          TAG="v$VERSION"
+          # tag (idempotent : ne le recrée pas s'il existe déjà)
+          if ! git ls-remote --exit-code --tags origin "refs/tags/$TAG" >/dev/null; then
             git tag "$TAG"
             git push origin "$TAG"
           fi
-          SUBJECT="Dreame Laundry v${{ inputs.version }}"
-          if [ -n "${{ inputs.notes }}" ]; then SUBJECT="$SUBJECT — ${{ inputs.notes }}"; fi
-          gh release create "$TAG" \
-            --title "$SUBJECT" \
-            --notes "Voir [AVANCEMENT.md](https://github.com/fs83500/dreame_laundry/blob/main/AVANCEMENT.md) pour le détail." \
-            "dreame_laundry-${{ inputs.version }}.zip" \
-            "dreame_laundry-${{ inputs.version }}.zip.sha256"
-
-      - name: Nettoyage branches temporaires
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: git push origin --delete test-tag-push 2>/dev/null || true
+          TITLE="Dreame Laundry v$VERSION"
+          if [ -n "$NOTES" ]; then TITLE="$TITLE — $NOTES"; fi
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            # release déjà publiée : on remplace seulement les archives
+            gh release upload "$TAG" --clobber \
+              "dreame_laundry-$VERSION.zip" "dreame_laundry-$VERSION.zip.sha256"
+          else
+            gh release create "$TAG" \
+              --title "$TITLE" \
+              --notes "Voir [AVANCEMENT.md](https://github.com/fs83500/dreame_laundry/blob/main/AVANCEMENT.md) pour le détail." \
+              "dreame_laundry-$VERSION.zip" \
+              "dreame_laundry-$VERSION.zip.sha256"
+          fi

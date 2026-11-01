@@ -1,6 +1,9 @@
 {
   "domain": "dreame_laundry",
   "name": "Dreame Laundry",
+  "categories": [
+    "appliances_cleaning.laundry"
+  ],
   "codeowners": [
     "@fs83500"
   ],

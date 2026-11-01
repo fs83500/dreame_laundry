@@ -35,7 +35,6 @@ class LaundryKeepAwakeSwitch(LaundryEntity, SwitchEntity, RestoreEntity):
 
     _attr_entity_category = EntityCategory.CONFIG
     _attr_translation_key = "keep_awake"
-    _attr_icon = "mdi:power-sleep"
 
     def __init__(self, coordinator: LaundryCoordinator) -> None:
         super().__init__(coordinator, "keep_awake")
@@ -77,7 +76,6 @@ class LaundryPowerSwitch(LaundryEntity, SwitchEntity):
     """Appliance power. Turning it off also pauses keep-awake, otherwise it would turn it back on."""
 
     _attr_translation_key = "power"
-    _attr_icon = "mdi:power"
 
     def __init__(self, coordinator: LaundryCoordinator) -> None:
         super().__init__(coordinator, "power")

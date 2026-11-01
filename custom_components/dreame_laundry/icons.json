@@ -1,0 +1,22 @@
+{
+  "entity": {
+    "sensor": {
+      "status": { "default": "mdi:washing-machine" },
+      "fault": { "default": "mdi:alert-circle-outline" },
+      "program": { "default": "mdi:format-list-bulleted" },
+      "progress": { "default": "mdi:progress-clock" },
+      "temperature": { "default": "mdi:thermometer-water" },
+      "spin_speed": { "default": "mdi:rotate-right" },
+      "drying_level": { "default": "mdi:tumble-dryer" },
+      "raw": { "default": "mdi:code-braces" }
+    },
+    "switch": {
+      "keep_awake": { "default": "mdi:power-sleep" },
+      "power": { "default": "mdi:power" }
+    },
+    "button": {
+      "scan": { "default": "mdi:magnify-scan" },
+      "refresh": { "default": "mdi:refresh" }
+    }
+  }
+}

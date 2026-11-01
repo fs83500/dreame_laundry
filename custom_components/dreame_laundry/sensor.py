@@ -43,15 +43,9 @@ class LaundrySensorDescription(SensorEntityDescription):
 
 
 DESCRIPTIONS: tuple[LaundrySensorDescription, ...] = (
-    LaundrySensorDescription(
-        key="status", translation_key="status", icon="mdi:washing-machine"
-    ),
-    LaundrySensorDescription(
-        key="fault", translation_key="fault", icon="mdi:alert-circle-outline"
-    ),
-    LaundrySensorDescription(
-        key="program", translation_key="program", icon="mdi:format-list-bulleted"
-    ),
+    LaundrySensorDescription(key="status", translation_key="status"),
+    LaundrySensorDescription(key="fault", translation_key="fault"),
+    LaundrySensorDescription(key="program", translation_key="program"),
     LaundrySensorDescription(
         key="remaining_time",
         translation_key="remaining_time",
@@ -64,7 +58,6 @@ DESCRIPTIONS: tuple[LaundrySensorDescription, ...] = (
         translation_key="progress",
         native_unit_of_measurement=PERCENTAGE,
         state_class=SensorStateClass.MEASUREMENT,
-        icon="mdi:progress-clock",
     ),
     LaundrySensorDescription(
         key="power_w",
@@ -100,17 +93,13 @@ DESCRIPTIONS: tuple[LaundrySensorDescription, ...] = (
         key="temperature",
         translation_key="temperature",
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
-        icon="mdi:thermometer-water",
     ),
     LaundrySensorDescription(
         key="spin_speed",
         translation_key="spin_speed",
         native_unit_of_measurement=REVOLUTIONS_PER_MINUTE,
-        icon="mdi:rotate-right",
     ),
-    LaundrySensorDescription(
-        key="drying_level", translation_key="drying_level", icon="mdi:tumble-dryer"
-    ),
+    LaundrySensorDescription(key="drying_level", translation_key="drying_level"),
 )
 
 _TEXT_KEYS = {"status", "fault", "program", "drying_level"}

@@ -28,7 +28,6 @@ async def async_setup_entry(
 class LaundryScanButton(LaundryEntity, ButtonEntity):
     _attr_entity_category = EntityCategory.DIAGNOSTIC
     _attr_translation_key = "scan"
-    _attr_icon = "mdi:magnify-scan"
 
     def __init__(self, coordinator: LaundryCoordinator) -> None:
         super().__init__(coordinator, "scan")
@@ -40,7 +39,6 @@ class LaundryScanButton(LaundryEntity, ButtonEntity):
 class LaundryRefreshButton(LaundryEntity, ButtonEntity):
     _attr_entity_category = EntityCategory.DIAGNOSTIC
     _attr_translation_key = "refresh"
-    _attr_icon = "mdi:refresh"
 
     def __init__(self, coordinator: LaundryCoordinator) -> None:
         super().__init__(coordinator, "refresh")

@@ -20,6 +20,11 @@ Dépôt : https://git.dpnac.cloud/fabien.solvez/dreame (forge Forgejo de Fabien)
 - [ ] Recette continue sur machine réelle : confirmer les autres mappings (état 2.2, défaut 2.3, programme 2.4, énergie, eau, progression…)
 - [ ] Fabien observe les capteurs `Propriété x.y` pendant un cycle complet → diff → mapping JSON complet
 - [ ] **SYNCHRONISATION RETOUR FORGE** : le commit `6b6fca9` (URLs HACS → GitHub) n'existe que sur GitHub. Sur le serveur (forge) : `git fetch https://github.com/fs83500/dreame_laundry.git main && git merge --ff-only FETCH_HEAD && git push origin main` (fast-forward depuis 2903a4e, aucun conflit). Codex ne peut pas pousser sur git.dpnac.cloud (pas de credentials Forgejo dans son sandbox).
+- [ ] **DESCRIPTION + TOPICS GitHub (valeurs proposées, prêtes à coller)** — métadonnées hors git, à renseigner dans l'UI GitHub (⚙️ section About) ou via l'API avec un PAT ; aucun agent n'a d'écriture API GitHub (module git_push = transport git uniquement).
+  - Description FR : « Intégration Home Assistant pour lave-linge et sèche-linge Dreame via le cloud Dreamehome (état, programme, temps restant, consommation) »
+  - Description EN (recommandée pour HACS/international) : « Home Assistant integration for Dreame washing machines and dryers via the Dreamehome cloud (state, program, remaining time, energy) »
+  - Topics : `home-assistant`, `hacs`, `dreame`, `laundry`, `washing-machine`, `clothes-dryer`, `custom-integration`
+  - NOTE : requis seulement pour le store HACS par défaut — un dépôt personnalisé HACS fonctionne sans ; la CI les ignore déjà (`ignore: brands description topics`).
 - [ ] Sur GitHub : renseigner la description et les topics du dépôt (vérifiés par HACS, ignorés dans la CI en attendant)
 - [ ] Optionnel : miroir automatique forge → GitHub à chaque release (l'installation via HACS impose GitHub)
 
